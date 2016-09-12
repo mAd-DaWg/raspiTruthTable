@@ -1,0 +1,5 @@
+written by mAd-DaWg
+warning, use this code/class/library at your your own risk! mAd-DaWg assumes no responsibility for any damage resulting from its use.
+if used incorrectly with your hardware, you could damage your device!
+For example, if you set a pin to output a 1 and the pin is connected to ground(0v), 
+it will cause a short circuit and permanently damage your raspberry pi
