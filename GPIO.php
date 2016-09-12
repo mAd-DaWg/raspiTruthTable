@@ -2,20 +2,20 @@
 class GPIO
 {
      /**
-     * Get a 2dimensional array of the current gpio pins status
+     * Get a 2 dimensional array of the current gpio pins status
      * @param int/array $pin Optional. specify a pin number or an array of pin numbers to only retrieve their status. leave false to retrieve everything. default is false
      * @param bool $gpio Optional. If true, explicitly uses gpio pins and their numbering(leaves out power pins etc). If false, uses physical pin numbering. default is true
      * @param bool $sort Optional. if true, it will sort the pins by pin number. if false, it will leave pins in the order they are found on the device. default is false
-     * @return array {
-     * 			pin number => array {
+     * @return array (
+     * 			pin number => array (
      *						GPIOpin => int,     //the gpio number of the pin if applicable.
      *						PhysicalPin => int, //the pin number as found on the raspberry pi hardware.
      *						BroadcomPin => int, //the cpu pin number that the pin is connected to.
      *						Name => string,     //the name that has been assigned to the pin.
      *						Mode => string,     //if the pin is in output mode or input mode.
      *						State => bool/int,  //if the pin is writing or reading a 1, this will be 1. if the pin is writing or reading a 0, this will be 0.
-     *					    }
-     *               }
+     *					    )
+     *               )
      *
      **/
 	static function status($pin = false, $gpio = true, $sort = true)
@@ -217,6 +217,12 @@ class GPIO
 		}
 	}
 	
+     /**
+     * reads the current state of a pin
+     * @param int/array $pins Specify a pin number or an array of pin numbers you want to read
+     * @param bool $gpio Optional. If true, explicitly uses gpio pins and their numbering(leaves out power pins etc). If false, uses physical pin numbering. default is true
+     * @return array(i have forgotten the output it gives if gpio is false. will have to look later)
+     **/ 
 	static function read($pins, $gpio = true)
 	{
 		$gstat = array();
@@ -250,6 +256,38 @@ class GPIO
 		}
 	}
 	
+     /**
+     * generate a 2 dimensional array truth table for the specified input and output pins.
+     * will return false if you have any overlapping write and read pins(1 pin can not be both for this test)
+     * Note, this will change the pins modes and states for the purpose of this test and then restore the pins to the state they where in before the test
+     * @param array $pinsWrite specify an array of pin numbers to be used as INPUTS to your circuit
+     * @param array $pinsRead specify an array of pin numbers to be used as OUTPUTS from your circuit
+     * @param int   $sleep the amount of seconds to wait for a response from your circuit for each set of inputs.if you have a slow circuit, time/calculate how long it takes to function and then set this value to match. Defaults is 0.2 seconds
+     * @param bool  $gpio Optional. If true, explicitly uses gpio pins and their numbering(leaves out power pins etc). If false, uses physical pin numbering. default is true
+     * @return array (
+     * 			inputset number => array (
+     *						Write => array(
+     * 								pin=> array (pin status array),
+     * 								pin=> array (pin status array)
+     * 							      ),
+     *						Read => array(
+     * 								pin=> array (pin status array),
+     * 								pin=> array (pin status array)
+     * 							      )
+     *					    ),
+     * 			inputset number => array (
+     *						Write => array(
+     * 								pin=> array (pin status array),
+     * 								pin=> array (pin status array)
+     * 							      ),
+     *						Read => array(
+     * 								pin=> array (pin status array),
+     * 								pin=> array (pin status array)
+     * 							      )
+     *					    )
+     *               )
+     *
+     **/
 	static function truthTable($pinsWrite, $pinsRead, $sleep = 0.2, $gpio = true)
 	{
 		if(count($pinsWrite) > 0 && count($pinsRead) > 0)
