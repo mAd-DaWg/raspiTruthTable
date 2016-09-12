@@ -1,6 +1,23 @@
 <?php
 class GPIO
 {
+    /**
+     * Get a 2dimensional array of the current gpio pins status
+     * @param int/array $pin Optional. specify a pin number or an array of pin numbers to only retrieve their status. leave false to retrieve everything. default is false
+     * @param bool $gpio Optional. If true, explicitly uses gpio pins and their numbering(leaves out power pins etc). If false, uses physical pin numbering. default is true
+     * @param bool $sort Optional. if true, it will sort the pins by pin number. if false, it will leave pins in the order they are found on the device. default is false
+     * @return array {
+     * 			pin number => array {
+     						GPIOpin => int,     //the gpio number of the pin if applicable.
+     						PhysicalPin => int, //the pin number as found on the raspberry pi hardware.
+     						BroadcomPin => int, //the cpu pin number that the pin is connected to.
+     						Name => string,     //the name that has been assigned to the pin.
+     						Mode => string,     //if the pin is in output mode or input mode.
+     						State => bool/int,  //if the pin is writing or reading a 1, this will be 1. if the pin is writing or reading a 0, this will be 0.
+     					    }
+                     }
+     }
+    */
 	static function status($pin = false, $gpio = true, $sort = true)
 	{
 		if($pin == null || $pin == "")
@@ -71,6 +88,12 @@ class GPIO
 		return $ans;
 	}
 	
+     /**
+     * set pins to input or output mode
+     * @param int/array $pins Specify a pin number or an array of pin numbers you want to set. Note: these are all set to the same mode!
+     * @param string $mode the mode to set the pins. can be either "in" or "out".
+     * @param bool $gpio Optional. If true, explicitly uses gpio pins and their numbering(leaves out power pins etc). If false, uses physical pin numbering. default is true
+     **/ 
 	static function setMode($pins, $mode, $gpio = true)
 	{
 		$result = "";
@@ -100,6 +123,12 @@ class GPIO
 		}
 	}
 	
+     /**
+     * set pins to input or output mode
+     * @param int/array $pins Specify a pin number or an array of pin numbers you want to set. Note: will not work on pins that are not in "out" mode. these are all set to the same output!
+     * @param int $data can be a 1 for high, or 0 for low
+     * @param bool $gpio Optional. If true, explicitly uses gpio pins and their numbering(leaves out power pins etc). If false, uses physical pin numbering. default is true
+     **/ 
 	static function write($pins, $data, $gpio = true)
 	{
 		$gstat = array();
@@ -128,6 +157,11 @@ class GPIO
 		}
 	}
 	
+     /**
+     * returns all pins to 0 and input mode. WARNING: can destroy your logic circuit and possibly damage your rapsberry pi! disconnect any circuits you connected to your gpio pins before use!
+     * @param int/array $pins Optional. Specify a pin number or an array of pin numbers you want to reset. If false, resets all pins
+     * @param bool $gpio Optional. If true, explicitly uses gpio pins and their numbering(leaves out power pins etc). If false, uses physical pin numbering. default is true
+     **/ 
 	static function reset($pins = false, $gpio = true)
 	{
 		if($pins == null || $pins == "")
