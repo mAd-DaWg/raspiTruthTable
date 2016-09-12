@@ -264,7 +264,7 @@ class GPIO
      * generate a 2 dimensional array truth table for the specified input and output pins.
      * will return false if you have any overlapping write and read pins(1 pin can not be both for this test)
      * Note, this will change the pins modes and states for the purpose of this test and then restore the pins to the state they where in before the test
-     * @param array $pinsWrite specify an array of pin numbers to be used as INPUTS to your circuit
+     * @param array $pinsWrite specify an array of pin numbers to be used as INPUTS to your circuit. the first pin
      * @param array $pinsRead specify an array of pin numbers to be used as OUTPUTS from your circuit
      * @param int   $sleep the amount of seconds to wait for a response from your circuit for each set of inputs.if you have a slow circuit, time/calculate how long it takes to function and then set this value to match. Defaults is 0.2 seconds
      * @param bool  $gpio Optional. If true, explicitly uses gpio pins and their numbering(leaves out power pins etc). If false, uses physical pin numbering. default is true
