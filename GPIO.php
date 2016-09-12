@@ -2,7 +2,7 @@
 //written by mAd-DaWg
 //warning, use this code/class/library at your your own risk! mAd-DaWg assumes no responsibility for any damage resulting from its use.
 //if used incorrectly with your hardware, you could damage your device!
-//For example, if you set a pin to output a 1 and the pin is connected to ground(0v), it will cause a short circuit and permanently damage your raspberry pi
+//For example, if you set a pin to output a 1 and the pin is connected directly to ground(0v), it will cause a short circuit and permanently damage your raspberry pi
 class GPIO
 {
      /**
@@ -354,55 +354,73 @@ class GPIO
 			return $table;
 		}
 	}
-	
+
+     /**
+     * generate a little html truth table(note not an html table) for the specified input and output pins.
+     * will return false if you have any overlapping write and read pins(1 pin can not be both for this test)
+     * Note, this will change the pins modes and states for the purpose of this test and then restore the pins to the state they where in before the test
+     * @param array $pinsWrite specify an array of pin numbers to be used as INPUTS to your circuit
+     * @param array $pinsRead specify an array of pin numbers to be used as OUTPUTS from your circuit
+     * @param int   $sleep the amount of seconds to wait for a response from your circuit for each set of inputs.if you have a slow circuit, time/calculate how long it takes to function and then set this value to match. Defaults is 0.2 seconds
+     * @param bool  $gpio Optional. If true, explicitly uses gpio pins and their numbering(leaves out power pins etc). If false, uses physical pin numbering. default is true
+     * @return string html code for the truth table
+     **/
 	static function truthTableHTML($pinsWrite, $pinsRead, $sleep = 0.2, $gpio = true)
 	{
 		$truths = GPIO::truthTable($pinsWrite, $pinsRead, $sleep, $gpio);
-		$out = "";
-		foreach($pinsWrite as $pin)
+		if($truths !== false)
 		{
-			$out .= $pin." ";
-		}
-		$out .= "| ";
-		foreach($pinsRead as $pin)
-		{
-			$out .= $pin." ";
-		}
-		$out .= "<br>";
-		foreach($pinsWrite as $pin)
-		{
-			$out .= "_ ";
-			if ($pin > 9)
-			{
-				$out .= "_ ";
-			}
-		}
-		$out .= "|";
-		foreach($pinsRead as $pin)
-		{
-			$out .= "_ ";
-			if ($pin > 9)
-			{
-				$out .= "_ ";
-			}
-		}
-		$out .= "<br>";
-		foreach($truths as $truth)
-		{
-			foreach($truth['Write'] as $pin)
+			$out = "";
+			foreach($pinsWrite as $pin)
 			{
 				$out .= $pin." ";
 			}
 			$out .= "| ";
-			foreach($truth['Read'] as $pin)
+			foreach($pinsRead as $pin)
 			{
 				$out .= $pin." ";
 			}
 			$out .= "<br>";
+			foreach($pinsWrite as $pin)
+			{
+				$out .= "_ ";
+				if ($pin > 9)
+				{
+					$out .= "_ ";
+				}
+			}
+			$out .= "|";
+			foreach($pinsRead as $pin)
+			{
+				$out .= "_ ";
+				if ($pin > 9)
+				{
+					$out .= "_ ";
+				}
+			}
+			$out .= "<br>";
+			foreach($truths as $truth)
+			{
+				foreach($truth['Write'] as $pin)
+				{
+					$out .= $pin." ";
+				}
+				$out .= "| ";
+				foreach($truth['Read'] as $pin)
+				{
+					$out .= $pin." ";
+				}
+				$out .= "<br>";
+			}
+			return $out;
 		}
-		return $out;
+		return "something went wrong. please make sure your pins are correct!";
 	}
 	
+     /**
+     * generate a html table detailing the layout of all the pins found on the raspberry pi(layout should be is as it is found on your hardware, according to wiring pi)
+     * @return string html code
+     **/
 	static function pinout()
 	{
 		$pins = GPIO::status(null, false, true);
