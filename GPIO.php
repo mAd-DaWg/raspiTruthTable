@@ -479,7 +479,7 @@ class GPIO
 	static function InOutForm($name, $action, $method = "post")
 	{
 		$pins = GPIO::status(null, false, true);
-		$out = "<form name='inout' id='inout'><table style=\"float: left;\" border=\"1\" cellpadding=\"0\" cellspacing=\"0\">
+		$out = "<form name='".$name."' id='".$name."' action='".$action."' method='".$method."'><table style=\"float: left;\" border=\"1\" cellpadding=\"0\" cellspacing=\"0\">
 <tbody>
 <th>
 <td><strong>Name</strong></td>
