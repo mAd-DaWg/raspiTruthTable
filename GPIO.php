@@ -474,14 +474,17 @@ class GPIO
      * @param string $name the name and id of the form
      * @param string $action the form action on submit
      * @param string $method whether to post the form using get or post
+     * @param bool   $select add an extra column to enable selecting of pins
      * @return string html code
      **/
-	static function InOutForm($name, $action, $method = "post")
+	static function InOutForm($name, $action, $method = "post", $select=false)
 	{
 		$pins = GPIO::status(null, false, true);
 		$out = "<form name='".$name."' id='".$name."' action='".$action."' method='".$method."'><table style=\"float: left;\" border=\"1\" cellpadding=\"0\" cellspacing=\"0\">
 <tbody>
-<th>
+<th>";
+if($select == true){$out .= "\n<td><strong>Selected</strong></td>";}
+$out .= "
 <td><strong>Name</strong></td>
 <td><strong>Mode</strong></td>
 <td><strong>State</strong></td>
@@ -489,11 +492,18 @@ class GPIO
 <td><strong>Pin</strong></td>
 <td><strong>Name</strong></td>
 <td><strong>Mode</strong></td>
-<td><strong>State</strong></td>
+<td><strong>State</strong></td>";
+if($select == true){$out .= "\n<td><strong>Selected</strong></td>";}
+$out .= "
 </th>";
 		for($i = 1; $i < 40; $i = $i+2)
 		{
-			$out .= "<tr>\n<td style=\"text-align: left;\">".$pins[$i]['Name']."</td>
+			$out .= "<tr>\n";
+			if($select == true)
+			{
+				$out .= "<td><input type='checkbox' name='pin".$pins[$i]['PhysicalPin']."' value='1'></td>";
+			}
+			$out .= "<td style=\"text-align: left;\">".$pins[$i]['Name']."</td>
 			<td style=\"text-align: left;\">IN<input type='radio' name='pin".$pins[$i]['PhysicalPin']."' value='in'";
 			if($pins[$i]['Mode'] == "IN")
 			{
@@ -520,9 +530,14 @@ class GPIO
 				$out .= "checked";
 			}
 			$out .=  "></td>
-			<td style=\"text-align: left;\">".$pins[$i+1]['State']."</td></tr>";
+			<td style=\"text-align: left;\">".$pins[$i+1]['State']."</td>";
+			if($select == true)
+			{
+				$out .= "<td><input type='checkbox' name='pin".$pins[$i]['PhysicalPin']."' value='1'></td>";
+			} 
+			$out .= "</tr>";
 		}
-		$out .= "</tbody></table></form>";
+		$out .= "</tbody></table><input type='submit' value='Submit'></form>";
 		return $out;
 	}
 }
