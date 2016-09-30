@@ -468,5 +468,62 @@ class GPIO
 		$out .= "</tbody></table>";
 		return $out;
 	}
+	
+     /**
+     * generate a html form for selecting the mode of pins
+     * @param string $name the name and id of the form
+     * @param string $action the form action on submit
+     * @param string $method whether to post the form using get or post
+     * @return string html code
+     **/
+	static function InOutForm($name, $action, $method = "post")
+	{
+		$pins = GPIO::status(null, false, true);
+		$out = "<form name='inout' id='inout'><table style=\"float: left;\" border=\"1\" cellpadding=\"0\" cellspacing=\"0\">
+<tbody>
+<th>
+<td><strong>Name</strong></td>
+<td><strong>Mode</strong></td>
+<td><strong>State</strong></td>
+<td><strong>Pin</strong></td>
+<td><strong>Pin</strong></td>
+<td><strong>Name</strong></td>
+<td><strong>Mode</strong></td>
+<td><strong>State</strong></td>
+</th>";
+		for($i = 1; $i < 40; $i = $i+2)
+		{
+			$out .= "<tr>\n<td style=\"text-align: left;\">".$pins[$i]['Name']."</td>
+			<td style=\"text-align: left;\">IN<input type='radio' name='pin".$pins[$i]['PhysicalPin']."' value='in'";
+			if($pins[$i]['Mode'] == "IN")
+			{
+				$out .= "checked";
+			}
+			$out .=  "> OUT<input type='radio' name='pin".$pins[$i]['PhysicalPin']."' value='out'";
+			elseif($pins[$i]['Mode'] == "OUT")
+			{
+				$out .= "checked";
+			}
+			$out .=  "></td>";
+			$out .= "<td style=\"text-align: left;\">".$pins[$i]['State']."</td>";
+			$out .= "<td><strong>".$i."</strong></td>";
+			$out .= "<td><strong>".($i+1)."</strong></td>";
+			$out .= "<td style=\"text-align: left;\">".$pins[$i+1]['Name']."</td>";
+			$out .= "<td style=\"text-align: left;\">IN<input type='radio' name='pin".$pins[$i+1]['PhysicalPin']."' value='in'";
+			if($pins[$i+1]['Mode'] == "IN")
+			{
+				$out .= "checked";
+			}
+			$out .=  "> OUT<input type='radio' name='pin".$pins[$i+1]['PhysicalPin']."' value='out'";
+			elseif($pins[$i+1]['Mode'] == "OUT")
+			{
+				$out .= "checked";
+			}
+			$out .=  "></td>
+			<td style=\"text-align: left;\">".$pins[$i+1]['State']."</td></tr>";
+		}
+		$out .= "</tbody></table></form>";
+		return $out;
+	}
 }
 ?>
