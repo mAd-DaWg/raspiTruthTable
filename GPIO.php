@@ -510,7 +510,7 @@ $out .= "
 				$out .= "checked";
 			}
 			$out .=  "> OUT<input type='radio' name='pin".$pins[$i]['PhysicalPin']."' value='out'";
-			elseif($pins[$i]['Mode'] == "OUT")
+			if($pins[$i]['Mode'] == "OUT")
 			{
 				$out .= "checked";
 			}
@@ -525,7 +525,7 @@ $out .= "
 				$out .= "checked";
 			}
 			$out .=  "> OUT<input type='radio' name='pin".$pins[$i+1]['PhysicalPin']."' value='out'";
-			elseif($pins[$i+1]['Mode'] == "OUT")
+			if($pins[$i+1]['Mode'] == "OUT")
 			{
 				$out .= "checked";
 			}
